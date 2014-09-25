@@ -52,7 +52,7 @@ class PharExtractorAdapter extends AbstractExtractorAdapter implements Extractor
      */
     public function extract($filePath)
     {
-        $directory = $this->directory->getDirectoryPath();
+        $directory = $this->directory;
         $pharArchive = new Phar($filePath);
         $pharArchive->extractTo($directory);
 

@@ -53,7 +53,7 @@ class RarExtractorAdapter extends AbstractExtractorAdapter implements ExtractorA
      */
     public function extract($filePath)
     {
-        $directory = $this->directory->getDirectoryPath();
+        $directory = $this->directory;
         $rarArchive = RarArchive::open($filePath);
         $rarEntries = $rarArchive->getEntries();
 

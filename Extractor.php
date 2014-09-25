@@ -17,7 +17,6 @@ use Mmoreram\Extractor\Adapter\Interfaces\ExtractorAdapterInterface;
 use Mmoreram\Extractor\Exception\AdapterNotAvailableException;
 use Mmoreram\Extractor\Exception\ExtensionNotSupportedException;
 use Mmoreram\Extractor\Exception\FileNotFoundException;
-use Mmoreram\Extractor\Filesystem\Interfaces\DirectoryInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -26,22 +25,18 @@ use Symfony\Component\Finder\Finder;
 class Extractor
 {
     /**
-     * @var DirectoryInterface
+     * @var string
      *
-     * Directory
+     * Path
      */
-    protected $directory;
+    private $directory;
 
     /**
-     * Construct method
-     *
-     * @param DirectoryInterface $directory Directory
+     * Construct
      */
-    public function __construct(
-        DirectoryInterface $directory
-    )
+    public function __construct()
     {
-        $this->directory = $directory;
+        $this->directory = sys_get_temp_dir() . "/" . uniqid(time());
     }
 
     /**
@@ -97,9 +92,7 @@ class Extractor
      */
     protected function checkDirectory()
     {
-        $directoryPath = $this
-            ->directory
-            ->getDirectoryPath();
+        $directoryPath = $this->directory;
 
         if (!is_dir($directoryPath)) {
 

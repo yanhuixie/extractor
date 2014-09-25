@@ -14,7 +14,6 @@
 namespace Mmoreram\Extractor\tests\Adapter;
 
 use Mmoreram\Extractor\Adapter\RarExtractorAdapter;
-use Mmoreram\Extractor\Filesystem\TemporaryDirectory;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -27,8 +26,7 @@ class RarExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $filesystem = new TemporaryDirectory();
-        $rarExtractorAdapter = new RarExtractorAdapter($filesystem);
+        $rarExtractorAdapter = new RarExtractorAdapter();
         if (!$rarExtractorAdapter->isAvailable()) {
 
             $this->markTestSkipped('PHP Rar extension not installed');
@@ -40,8 +38,7 @@ class RarExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function testExtract()
     {
-        $filesystem = new TemporaryDirectory();
-        $rarExtractorAdapter = new RarExtractorAdapter($filesystem);
+        $rarExtractorAdapter = new RarExtractorAdapter();
         $finder = $rarExtractorAdapter->extract(dirname(__FILE__). '/Fixtures/file.rar');
 
         $this->assertEquals($finder->count(), 3);

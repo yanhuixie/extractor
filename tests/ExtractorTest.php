@@ -16,8 +16,6 @@ namespace Mmoreram\Extractor\tests;
 use Mmoreram\Extractor\Exception\AdapterNotAvailableException;
 use Mmoreram\Extractor\Exception\FileNotFoundException;
 use Mmoreram\Extractor\Extractor;
-use Mmoreram\Extractor\Filesystem\TemporaryDirectory;
-use Mmoreram\Extractor\Resolver\ExtensionResolver;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -32,8 +30,7 @@ class ExtractorTest extends PHPUnit_Framework_TestCase
     {
         $fileName = dirname(__FILE__) . '/Adapter/Fixtures/file.phar';
 
-        $filesystem = new TemporaryDirectory();
-        $extractor = new Extractor($filesystem);
+        $extractor = new Extractor();
 
         $this->assertInstanceOf(
             'Symfony\Component\Finder\Finder',
@@ -48,8 +45,7 @@ class ExtractorTest extends PHPUnit_Framework_TestCase
     {
         $fileName = dirname(__FILE__) . '/Adapter/Fixtures/phar2.phar';
 
-        $filesystem = new TemporaryDirectory();
-        $extractor = new Extractor($filesystem);
+        $extractor = new Extractor();
 
         try {
             $extractor->extractFromFile($fileName);
@@ -74,11 +70,8 @@ class ExtractorTest extends PHPUnit_Framework_TestCase
             ->method('isAvailable')
             ->will($this->returnValue(false));
 
-        $filesystem = new TemporaryDirectory();
-
         $extractor = $this
             ->getMockBuilder('\Mmoreram\Extractor\Extractor')
-            ->setConstructorArgs(array($filesystem))
             ->setMethods(array('instanceExtractorAdapter'))
             ->getMock();
 
@@ -102,8 +95,7 @@ class ExtractorTest extends PHPUnit_Framework_TestCase
     {
         $fileName = dirname(__FILE__) . '/Adapter/Fixtures/file.tar.gz';
 
-        $filesystem = new TemporaryDirectory();
-        $extractor = new Extractor($filesystem);
+        $extractor = new Extractor();
 
         try {
             $extractor->extractFromFile($fileName);

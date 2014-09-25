@@ -52,7 +52,7 @@ class ZipExtractorAdapter extends AbstractExtractorAdapter implements ExtractorA
      */
     public function extract($filePath)
     {
-        $directory = $this->directory->getDirectoryPath();
+        $directory = $this->directory;
         $zipArchive = new ZipArchive();
         $zipArchive->open($filePath);
         $zipArchive->extractTo($directory);

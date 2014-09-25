@@ -14,7 +14,6 @@
 namespace Mmoreram\Extractor\tests\Adapter;
 
 use Mmoreram\Extractor\Adapter\TarExtractorAdapter;
-use Mmoreram\Extractor\Filesystem\TemporaryDirectory;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -27,8 +26,7 @@ class TarExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $filesystem = new TemporaryDirectory();
-        $pharExtractorAdapter = new TarExtractorAdapter($filesystem);
+        $pharExtractorAdapter = new TarExtractorAdapter();
         if (!$pharExtractorAdapter->isAvailable()) {
 
             $this->markTestSkipped('Phar extension not installed');
@@ -40,8 +38,7 @@ class TarExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function testExtract()
     {
-        $filesystem = new TemporaryDirectory();
-        $tarExtractorAdapter = new TarExtractorAdapter($filesystem);
+        $tarExtractorAdapter = new TarExtractorAdapter();
         $finder = $tarExtractorAdapter->extract(dirname(__FILE__). '/Fixtures/file.tar');
 
         $this->assertEquals($finder->count(), 3);

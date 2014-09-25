@@ -14,7 +14,6 @@
 namespace Mmoreram\Extractor\tests\Adapter;
 
 use Mmoreram\Extractor\Adapter\PharExtractorAdapter;
-use Mmoreram\Extractor\Filesystem\TemporaryDirectory;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -27,8 +26,7 @@ class PharExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $filesystem = new TemporaryDirectory();
-        $pharExtractorAdapter = new PharExtractorAdapter($filesystem);
+        $pharExtractorAdapter = new PharExtractorAdapter();
         if (!$pharExtractorAdapter->isAvailable()) {
 
             $this->markTestSkipped('PHP Phar extension not installed');
@@ -40,8 +38,7 @@ class PharExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function testExtract()
     {
-        $filesystem = new TemporaryDirectory();
-        $pharExtractorAdapter = new PharExtractorAdapter($filesystem);
+        $pharExtractorAdapter = new PharExtractorAdapter();
         $finder = $pharExtractorAdapter->extract(dirname(__FILE__). '/Fixtures/file.phar');
 
         $this->assertEquals($finder->count(), 3);

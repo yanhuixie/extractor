@@ -13,7 +13,6 @@
 
 namespace Mmoreram\Extractor\Adapter\Abstracts;
 
-use Mmoreram\Extractor\Filesystem\Interfaces\DirectoryInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -22,7 +21,7 @@ use Symfony\Component\Finder\Finder;
 abstract class AbstractExtractorAdapter
 {
     /**
-     * @var DirectoryInterface
+     * @var string
      *
      * Directory
      */
@@ -31,11 +30,10 @@ abstract class AbstractExtractorAdapter
     /**
      * Construct method
      *
-     * @param DirectoryInterface $directory Directory
      */
-    public function __construct(DirectoryInterface $directory)
+    public function __construct()
     {
-        $this->directory = $directory;
+        $this->directory = sys_get_temp_dir() . "/" . uniqid(time());
     }
 
     /**

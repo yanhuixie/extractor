@@ -53,7 +53,7 @@ class TarBz2ExtractorAdapter extends AbstractExtractorAdapter implements Extract
      */
     public function extract($filePath)
     {
-        $directory = $this->directory->getDirectoryPath();
+        $directory = $this->directory;
         $pharArchive = new PharData($filePath, null, null, Phar::BZ2);
         $pharArchive->extractTo($directory);
 

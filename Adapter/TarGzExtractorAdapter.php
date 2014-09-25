@@ -53,7 +53,7 @@ class TarGzExtractorAdapter extends AbstractExtractorAdapter implements Extracto
      */
     public function extract($filePath)
     {
-        $directory = $this->directory->getDirectoryPath();
+        $directory = $this->directory;
         $pharArchive = new PharData($filePath, null, null, Phar::GZ);
         $pharArchive->extractTo($directory);
 

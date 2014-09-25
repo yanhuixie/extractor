@@ -14,7 +14,6 @@
 namespace Mmoreram\Extractor\tests\Adapter;
 
 use Mmoreram\Extractor\Adapter\TarBz2ExtractorAdapter;
-use Mmoreram\Extractor\Filesystem\TemporaryDirectory;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -27,8 +26,7 @@ class TarBz2ExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $filesystem = new TemporaryDirectory();
-        $pharExtractorAdapter = new TarBz2ExtractorAdapter($filesystem);
+        $pharExtractorAdapter = new TarBz2ExtractorAdapter();
         if (!$pharExtractorAdapter->isAvailable()) {
 
             $this->markTestSkipped('Phar extension not installed');
@@ -40,8 +38,7 @@ class TarBz2ExtractorAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function testExtract()
     {
-        $filesystem = new TemporaryDirectory();
-        $tarExtractorAdapter = new TarBz2ExtractorAdapter($filesystem);
+        $tarExtractorAdapter = new TarBz2ExtractorAdapter();
         $finder = $tarExtractorAdapter->extract(dirname(__FILE__). '/Fixtures/file.tar.bz2');
 
         $this->assertEquals($finder->count(), 3);
