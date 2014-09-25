@@ -13,11 +13,11 @@
 
 namespace Mmoreram\Extractor;
 
-use Mmoreram\Extractor\Adapter\Interfaces\ExtractorAdapterInterface;
-use Mmoreram\Extractor\Exception\AdapterNotAvailableException;
+use Exception;
 use Mmoreram\Extractor\Exception\ExtensionNotSupportedException;
 use Mmoreram\Extractor\Exception\FileNotFoundException;
 use Symfony\Component\Finder\Finder;
+use ZipArchive;
 
 /**
  * Class Extractor
@@ -47,42 +47,35 @@ class Extractor
      * @return Finder Finder instance with all files added
      *
      * @throws ExtensionNotSupportedException Exception not found
-     * @throws AdapterNotAvailableException   Adapter not available
+     * @throws Exception                      File must be a zip package
      * @throws FileNotFoundException          File not found
      */
     public function extractFromFile($filePath)
     {
+        if (!class_exists('\ZipArchive')) {
+
+            throw new ExtensionNotSupportedException('ZipArchive');
+        }
+
         if (!is_file($filePath)) {
 
             throw new FileNotFoundException($filePath);
         }
 
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-        $this->checkDirectory();
 
-        $extractorAdapterNamespace = $this->getAdapterNamespaceGivenExtension($extension);
+        if ($extension != 'zip') {
 
-        $extractorAdapter = $this
-            ->instanceExtractorAdapter($extractorAdapterNamespace);
-
-        if (!$extractorAdapter->isAvailable()) {
-
-            throw new AdapterNotAvailableException($extractorAdapter->getIdentifier());
+            throw new Exception('File must be a zip package');
         }
 
-        return $extractorAdapter->extract($filePath);
-    }
+        $this->checkDirectory();
 
-    /**
-     * Instance new extractor adapter given its namespace
-     *
-     * @param string $extractorAdapterNamespace Extractor Adapter namespace
-     *
-     * @return ExtractorAdapterInterface Extractor adapter
-     */
-    protected function instanceExtractorAdapter($extractorAdapterNamespace)
-    {
-        return new $extractorAdapterNamespace($this->directory);
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($filePath);
+        $zipArchive->extractTo($this->directory);
+
+        return $this->createFinderFromDirectory();
     }
 
     /**
@@ -92,59 +85,26 @@ class Extractor
      */
     protected function checkDirectory()
     {
-        $directoryPath = $this->directory;
+        if (!is_dir($this->directory)) {
 
-        if (!is_dir($directoryPath)) {
-
-            mkdir($directoryPath);
+            mkdir($this->directory);
         }
 
         return $this;
     }
 
     /**
-     * Return a extractor adapter namespace given an extension
+     * Create finder from a directory
      *
-     * @param string $fileExtension File extension
+     * @param string $directory Directory
      *
-     * @return string Adapter namespace
-     *
-     * @throws ExtensionNotSupportedException Exception not found
+     * @return Finder
      */
-    protected function getAdapterNamespaceGivenExtension($fileExtension)
+    protected function createFinderFromDirectory()
     {
-        $adapterNamespace = '\Mmoreram\Extractor\Adapter\\';
+        $finder = Finder::create();
+        $finder->in($this->directory);
 
-        switch ($fileExtension) {
-
-            case 'zip':
-                $adapterNamespace .= 'ZipExtractorAdapter';
-                break;
-
-            case 'rar':
-                $adapterNamespace .= 'RarExtractorAdapter';
-                break;
-
-            case 'phar':
-                $adapterNamespace .= 'PharExtractorAdapter';
-                break;
-
-            case 'tar':
-                $adapterNamespace .= 'TarExtractorAdapter';
-                break;
-
-            case 'gz':
-                $adapterNamespace .= 'TarGzExtractorAdapter';
-                break;
-
-            case 'bz2':
-                $adapterNamespace .= 'TarBz2ExtractorAdapter';
-                break;
-
-            default:
-                throw new ExtensionNotSupportedException($fileExtension);
-        }
-
-        return $adapterNamespace;
+        return $finder;
     }
 }

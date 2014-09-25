@@ -13,7 +13,7 @@
 
 namespace Mmoreram\Extractor\tests;
 
-use Mmoreram\Extractor\Exception\AdapterNotAvailableException;
+use Exception;
 use Mmoreram\Extractor\Exception\FileNotFoundException;
 use Mmoreram\Extractor\Extractor;
 use PHPUnit_Framework_TestCase;
@@ -28,7 +28,7 @@ class ExtractorTest extends PHPUnit_Framework_TestCase
      */
     public function testExtractFromFile()
     {
-        $fileName = dirname(__FILE__) . '/Adapter/Fixtures/file.phar';
+        $fileName = dirname(__FILE__) . '/Fixtures/file.zip';
 
         $extractor = new Extractor();
 
@@ -43,7 +43,7 @@ class ExtractorTest extends PHPUnit_Framework_TestCase
      */
     public function testExtractFromNonExistingFile()
     {
-        $fileName = dirname(__FILE__) . '/Adapter/Fixtures/phar2.phar';
+        $fileName = dirname(__FILE__) . '/Fixtures/file2.zip';
 
         $extractor = new Extractor();
 
@@ -60,47 +60,15 @@ class ExtractorTest extends PHPUnit_Framework_TestCase
      */
     public function testExtractWithNotAvailableAdapter()
     {
-        $fileName = dirname(__FILE__) . '/Adapter/Fixtures/file.phar';
-
-        $extractorAdapterInterface = $this
-            ->getMock('\Mmoreram\Extractor\Adapter\Interfaces\ExtractorAdapterInterface');
-
-        $extractorAdapterInterface
-            ->expects($this->any())
-            ->method('isAvailable')
-            ->will($this->returnValue(false));
-
-        $extractor = $this
-            ->getMockBuilder('\Mmoreram\Extractor\Extractor')
-            ->setMethods(array('instanceExtractorAdapter'))
-            ->getMock();
-
-        $extractor
-            ->expects($this->any())
-            ->method('instanceExtractorAdapter')
-            ->will($this->returnValue($extractorAdapterInterface));
-
-        try {
-            $extractor->extractFromFile($fileName);
-            $this->fail();
-        } catch (AdapterNotAvailableException $e) {
-
-        }
-    }
-
-    /**
-     * Tests extractFromFile
-     */
-    public function testExtractWithMultiExtension()
-    {
-        $fileName = dirname(__FILE__) . '/Adapter/Fixtures/file.tar.gz';
+        $fileName = dirname(__FILE__) . '/Fixtures/file.zipo';
 
         $extractor = new Extractor();
 
         try {
             $extractor->extractFromFile($fileName);
-        } catch (AdapterNotAvailableException $e) {
             $this->fail();
+        } catch (Exception $e) {
+
         }
     }
 }
