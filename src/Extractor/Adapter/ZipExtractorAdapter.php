@@ -55,8 +55,18 @@ class ZipExtractorAdapter extends AbstractExtractorAdapter implements ExtractorA
         $directory = $this->directory->getDirectoryPath();
         $zipArchive = new ZipArchive();
         $zipArchive->open($filePath);
-        $zipArchive->extractTo($directory);
 
+        //fix CJK encoding before extract
+        $encodes = ['UTF-8','GB18030','GBK','GB2312','BIG5','CP936','CP932'];
+        for ($i = 0; $i < $zipArchive->numFiles; $i++) {
+            $name = $zipArchive->statIndex($i, \ZipArchive::FL_ENC_RAW)['name'];
+            $encoding = mb_detect_encoding($name, $encodes);
+            if($encoding != 'UTF-8'){
+                $zipArchive->renameIndex($i, iconv($encoding,'utf-8//IGNORE', $name));
+            }
+        }
+
+        $zipArchive->extractTo($directory);
         return $this->createFinderFromDirectory($directory);
     }
 }
